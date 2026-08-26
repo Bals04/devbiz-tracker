@@ -1,0 +1,273 @@
+/* ==========================================================================
+   DevBiz Tracker — Design Tokens
+   Brand DNA inherited from devbiz.site: Montserrat + Orbitron on #00dc82.
+   Two layers: primitives (raw values) -> semantic tokens (intent).
+   Components may only reference semantic tokens.
+   ========================================================================== */
+
+@font-face {
+  font-family: 'Montserrat';
+  src: url('../assets/fonts/Montserrat-latin.woff2') format('woff2');
+  font-weight: 400 800;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Montserrat';
+  src: url('../assets/fonts/Montserrat-latin-ext.woff2') format('woff2');
+  font-weight: 400 800;
+  font-style: normal;
+  font-display: swap;
+  /* Includes U+20B1, the peso sign. Required for PHP currency rendering. */
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
+    U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0,
+    U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Orbitron';
+  src: url('../assets/fonts/Orbitron-Variable.ttf') format('truetype');
+  font-weight: 400 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /* --- Primitives: brand ------------------------------------------------ */
+  --green-300: #6ef2bb;
+  --green-400: #2ce89a;
+  --green-500: #00dc82; /* the DevBiz green */
+  --green-600: #00b96d;
+  --green-700: #00874f;
+  --green-800: #00633a;
+
+  /* --- Primitives: type ------------------------------------------------- */
+  --font-ui: 'Montserrat', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-brand: 'Orbitron', var(--font-ui);
+  --font-mono: ui-monospace, 'Cascadia Code', 'SF Mono', Menlo, Consolas, monospace;
+
+  /* Montserrat is optically wide, so large sizes carry negative tracking. */
+  --fs-2xs: 0.625rem;    /* 10 */
+  --fs-xs: 0.6875rem;    /* 11 */
+  --fs-sm: 0.75rem;      /* 12 */
+  --fs-base: 0.8125rem;  /* 13 */
+  --fs-md: 0.875rem;     /* 14 */
+  --fs-lg: 1rem;         /* 16 */
+  --fs-xl: 1.125rem;     /* 18 */
+  --fs-2xl: 1.375rem;    /* 22 */
+  --fs-3xl: 1.75rem;     /* 28 */
+  --fs-4xl: clamp(1.75rem, 2.6vw, 2.375rem);
+  --fs-hero: clamp(2.25rem, 4.6vw, 3.75rem);
+
+  --track-tight: -0.03em;
+  --track-tighter: -0.045em;
+  --track-caps: 0.14em;
+
+  /* --- Primitives: space / shape / motion ------------------------------- */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-7: 32px;
+  --sp-8: 40px;
+  --sp-9: 48px;
+  --sp-10: 64px;
+  --sp-11: 80px;
+
+  --r-xs: 6px;
+  --r-sm: 8px;
+  --r-md: 10px;
+  --r-lg: 14px;
+  --r-xl: 18px;
+  --r-2xl: 24px;
+  --r-full: 999px;
+
+  --dur-fast: 110ms;
+  --dur: 170ms;
+  --dur-slow: 280ms;
+  --ease: cubic-bezier(0.32, 0.72, 0.28, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --z-sticky: 20;
+  --z-sidebar: 40;
+  --z-scrim: 50;
+  --z-modal: 60;
+  --z-palette: 70;
+  --z-toast: 80;
+
+  --sidebar-w: 258px;
+  --topbar-h: 62px;
+  --content-max: 1560px;
+}
+
+/* ==========================================================================
+   LIGHT THEME — defined on bare :root so no token exists only inside a query.
+   ========================================================================== */
+:root {
+  color-scheme: light;
+
+  --bg: #f4f6f9;
+  --bg-accent: radial-gradient(1100px 500px at 80% -14%, rgba(0, 220, 130, 0.1), transparent 62%);
+  --surface: #ffffff;
+  --surface-2: #f8fafc;
+  --surface-3: #eef2f6;
+  --surface-raised: #ffffff;
+  --surface-inset: #f4f7fa;
+
+  --border: #e3e8ef;
+  --border-strong: #cfd8e3;
+  --border-brand: rgba(0, 185, 109, 0.45);
+
+  --text: #0c1420;
+  --text-muted: #556273;
+  --text-subtle: #8592a3;
+  --text-inverse: #ffffff;
+
+  --brand: var(--green-500);
+  --brand-hover: var(--green-400);
+  --brand-active: var(--green-600);
+  --brand-fg: #05271a;            /* text sitting on a --brand fill */
+  --brand-text: var(--green-700); /* brand-coloured text on --surface */
+  --brand-soft: rgba(0, 220, 130, 0.13);
+  --brand-soft-hover: rgba(0, 220, 130, 0.2);
+  --brand-ring: rgba(0, 185, 109, 0.3);
+
+  --info: #0284c7;
+  --info-soft: rgba(2, 132, 199, 0.1);
+  --success: #059669;
+  --success-soft: rgba(5, 150, 105, 0.1);
+  --warn: #b45309;
+  --warn-soft: rgba(180, 83, 9, 0.1);
+  --danger: #dc2626;
+  --danger-soft: rgba(220, 38, 38, 0.09);
+  --violet: #7c3aed;
+  --violet-soft: rgba(124, 58, 237, 0.1);
+  --neutral-soft: #eaeef3;
+
+  --shadow-xs: 0 1px 2px rgba(13, 20, 32, 0.05);
+  --shadow-sm: 0 1px 3px rgba(13, 20, 32, 0.07), 0 1px 2px rgba(13, 20, 32, 0.04);
+  --shadow-md: 0 4px 14px rgba(13, 20, 32, 0.07), 0 1px 3px rgba(13, 20, 32, 0.05);
+  --shadow-lg: 0 16px 40px rgba(13, 20, 32, 0.11), 0 2px 8px rgba(13, 20, 32, 0.05);
+  --shadow-xl: 0 28px 70px rgba(13, 20, 32, 0.17);
+  --shadow-brand: 0 8px 24px rgba(0, 185, 109, 0.22);
+
+  --skeleton-base: #e8edf3;
+  --skeleton-shine: #f5f8fb;
+  --scrim: rgba(15, 23, 42, 0.42);
+}
+
+/* ==========================================================================
+   DARK THEME — declared twice so the toggle wins in both directions:
+   (a) system preference, unless the user explicitly chose light
+   (b) an explicit data-theme="dark"
+   ========================================================================== */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+
+    --bg: #070a0f;
+    --bg-accent: radial-gradient(1100px 500px at 80% -14%, rgba(0, 220, 130, 0.12), transparent 62%);
+    --surface: #0d1219;
+    --surface-2: #121924;
+    --surface-3: #18212e;
+    --surface-raised: #141d29;
+    --surface-inset: #0a0e15;
+
+    --border: #1c2634;
+    --border-strong: #2a3747;
+    --border-brand: rgba(0, 220, 130, 0.4);
+
+    --text: #eef3f8;
+    --text-muted: #94a3b6;
+    --text-subtle: #64748b;
+    --text-inverse: #0c1420;
+
+    --brand: var(--green-500);
+    --brand-hover: var(--green-400);
+    --brand-active: var(--green-600);
+    --brand-fg: #04170e;
+    --brand-text: var(--green-300);
+    --brand-soft: rgba(0, 220, 130, 0.11);
+    --brand-soft-hover: rgba(0, 220, 130, 0.18);
+    --brand-ring: rgba(0, 220, 130, 0.32);
+
+    --info: #38bdf8;
+    --info-soft: rgba(56, 189, 248, 0.11);
+    --success: #34d399;
+    --success-soft: rgba(52, 211, 153, 0.11);
+    --warn: #fbbf24;
+    --warn-soft: rgba(251, 191, 36, 0.11);
+    --danger: #fb7185;
+    --danger-soft: rgba(251, 113, 133, 0.11);
+    --violet: #a78bfa;
+    --violet-soft: rgba(167, 139, 250, 0.11);
+    --neutral-soft: #1e2836;
+
+    --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.45);
+    --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.42);
+    --shadow-lg: 0 18px 44px rgba(0, 0, 0, 0.5);
+    --shadow-xl: 0 32px 80px rgba(0, 0, 0, 0.6);
+    --shadow-brand: 0 10px 30px rgba(0, 220, 130, 0.16);
+
+    --skeleton-base: #161f2b;
+    --skeleton-shine: #1f2937;
+    --scrim: rgba(2, 6, 14, 0.72);
+  }
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --bg: #070a0f;
+  --bg-accent: radial-gradient(1100px 500px at 80% -14%, rgba(0, 220, 130, 0.12), transparent 62%);
+  --surface: #0d1219;
+  --surface-2: #121924;
+  --surface-3: #18212e;
+  --surface-raised: #141d29;
+  --surface-inset: #0a0e15;
+
+  --border: #1c2634;
+  --border-strong: #2a3747;
+  --border-brand: rgba(0, 220, 130, 0.4);
+
+  --text: #eef3f8;
+  --text-muted: #94a3b6;
+  --text-subtle: #64748b;
+  --text-inverse: #0c1420;
+
+  --brand: var(--green-500);
+  --brand-hover: var(--green-400);
+  --brand-active: var(--green-600);
+  --brand-fg: #04170e;
+  --brand-text: var(--green-300);
+  --brand-soft: rgba(0, 220, 130, 0.11);
+  --brand-soft-hover: rgba(0, 220, 130, 0.18);
+  --brand-ring: rgba(0, 220, 130, 0.32);
+
+  --info: #38bdf8;
+  --info-soft: rgba(56, 189, 248, 0.11);
+  --success: #34d399;
+  --success-soft: rgba(52, 211, 153, 0.11);
+  --warn: #fbbf24;
+  --warn-soft: rgba(251, 191, 36, 0.11);
+  --danger: #fb7185;
+  --danger-soft: rgba(251, 113, 133, 0.11);
+  --violet: #a78bfa;
+  --violet-soft: rgba(167, 139, 250, 0.11);
+  --neutral-soft: #1e2836;
+
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.45);
+  --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.42);
+  --shadow-lg: 0 18px 44px rgba(0, 0, 0, 0.5);
+  --shadow-xl: 0 32px 80px rgba(0, 0, 0, 0.6);
+  --shadow-brand: 0 10px 30px rgba(0, 220, 130, 0.16);
+
+  --skeleton-base: #161f2b;
+  --skeleton-shine: #1f2937;
+  --scrim: rgba(2, 6, 14, 0.72);
+}
