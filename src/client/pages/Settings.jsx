@@ -129,7 +129,7 @@ export function Settings() {
                 <Avatar name={member.name} color={member.avatar_color} size="lg" />
                 <span style={{ minWidth: 0 }}>
                   <strong>{member.name}</strong>
-                  <span>Can be assigned to tasks</span>
+                  <span className="payment-row__meta">Can be assigned to tasks</span>
                 </span>
                 <span className="badge badge--success">Active</span>
               </li>

@@ -315,6 +315,17 @@
   background: var(--surface-2);
 }
 
+/* Rows that navigate on click — the cell link stays for context menus and
+   middle-click, the row carries the affordance and keyboard focus. */
+.table tbody tr.table__row--link {
+  cursor: pointer;
+}
+
+.table tbody tr.table__row--link:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: -2px;
+}
+
 .table .num {
   text-align: right;
   font-weight: 700;
@@ -594,7 +605,11 @@
   font-size: var(--fs-base);
 }
 
-.payment-row span {
+/* Explicitly classed rather than a bare `.payment-row span`: that descendant
+   selector outranked .payment-row__icon, .avatar and .badge on specificity and
+   forced them to display:block, knocking their centred contents out of
+   alignment. */
+.payment-row__meta {
   display: block;
   font-size: var(--fs-xs);
   color: var(--text-muted);

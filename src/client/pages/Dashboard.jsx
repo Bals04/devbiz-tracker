@@ -1,5 +1,5 @@
 import {
-  ArrowRight, Banknote, BriefcaseBusiness, CircleDollarSign, Clock3, FolderKanban,
+  ArrowRight, Banknote, BriefcaseBusiness, Clock3, FolderKanban, PhilippinePeso,
   TriangleAlert, UsersRound,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -44,7 +44,7 @@ export function Dashboard() {
       label: 'Outstanding',
       value: <Amount value={summary?.outstanding_balance} compact />,
       note: 'Still to collect',
-      icon: CircleDollarSign,
+      icon: PhilippinePeso,
       tone: 'warn',
     },
     {
@@ -127,7 +127,7 @@ export function Dashboard() {
                   >
                     <span style={{ minWidth: 0 }}>
                       <strong className="truncate">{client.project_name}</strong>
-                      <span className="truncate">{client.name}</span>
+                      <span className="payment-row__meta truncate">{client.name}</span>
                     </span>
                     <span style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-3)' }}>
                       <span className={due.tone === 'overdue' ? 'due-flag due-flag--overdue' : 'due-flag due-flag--soon'}>

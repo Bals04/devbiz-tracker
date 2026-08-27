@@ -1,6 +1,6 @@
 import {
-  Banknote, CalendarClock, CheckCircle2, CircleDollarSign, Clock3,
-  Mail, MapPin, Pencil, Phone, Plus, ReceiptText, StickyNote,
+  Banknote, CalendarClock, CheckCircle2, Clock3,
+  Mail, MapPin, Pencil, PhilippinePeso, Phone, Plus, ReceiptText, StickyNote,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useOutletContext, useParams } from 'react-router-dom';
@@ -81,7 +81,7 @@ export function ClientDetails() {
     {
       label: 'Remaining balance',
       value: <Amount value={client.remaining_balance} code={client.currency} />,
-      icon: CircleDollarSign,
+      icon: PhilippinePeso,
       tone: Number(client.remaining_balance) > 0 ? 'warn' : 'brand',
     },
     { label: 'Project due', value: date(client.due_date), icon: CalendarClock, tone: 'violet' },
@@ -242,7 +242,7 @@ export function ClientDetails() {
                         </span>
                         <span style={{ minWidth: 0 }}>
                           <strong>{statusLabel(payment.payment_type)}</strong>
-                          <span className="truncate">
+                          <span className="payment-row__meta truncate">
                             {date(payment.payment_date)}
                             {payment.reference_number ? ` · ${payment.reference_number}` : ''}
                           </span>

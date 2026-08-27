@@ -1,6 +1,6 @@
 import { FolderKanban, LayoutGrid, Plus, Rows3 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { ClientCard } from '../components/ClientCard.jsx';
 import { ClientForm } from '../components/ClientForm.jsx';
 import { Button } from '../components/ui/Button.jsx';
@@ -46,6 +46,7 @@ const SORTERS = {
 
 export function Clients() {
   const [params, setParams] = useSearchParams();
+  const navigate = useNavigate();
   const [query, setQuery] = useState('');
   const [status, setStatus] = useState('all');
   const [sort, setSort] = useLocalStorage('devbiz.clients.sort', 'recent');
@@ -197,7 +198,24 @@ export function Clients() {
               {visible.map((client) => {
                 const due = dueStatus(client.due_date);
                 return (
-                  <tr key={client.id}>
+                  <tr
+                    key={client.id}
+                    className="table__row--link"
+                    tabIndex={0}
+                    // The whole row navigates, but a click that lands on a real
+                    // control keeps its own behaviour rather than being
+                    // swallowed by the row handler.
+                    onClick={(event) => {
+                      if (event.target.closest('a, button, input, select, textarea')) return;
+                      navigate(`/clients/${client.id}`);
+                    }}
+                    onKeyDown={(event) => {
+                      if (event.target !== event.currentTarget) return;
+                      if (event.key !== 'Enter' && event.key !== ' ') return;
+                      event.preventDefault();
+                      navigate(`/clients/${client.id}`);
+                    }}
+                  >
                     <td>
                       <Link to={`/clients/${client.id}`} className="table__primary">
                         {client.project_name}

@@ -1,5 +1,5 @@
 import { CalendarDays, MessageSquare, MoveRight, Pencil, Plus, Trash2 } from 'lucide-react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useToast } from '../context/ToastContext.jsx';
 import { api } from '../lib/api.js';
 import { dueStatus } from '../lib/format.js';
@@ -18,7 +18,33 @@ export function KanbanBoard({ clientId, board, members, onRefresh }) {
   const [deleting, setDeleting] = useState(false);
   const toast = useToast();
 
-  const tasksFor = (columnId) => board.tasks.filter((task) => task.column_id === columnId);
+  /**
+   * In-flight column changes, keyed by task id, layered over the server board.
+   * A drop repaints immediately instead of waiting on the round trip; the entry
+   * is dropped once the refetched board carries the move, and dropping it after
+   * a failure is what rolls the card back to where it came from.
+   */
+  const [pendingMoves, setPendingMoves] = useState({});
+  // Distinguishes overlapping moves of the same task, so a slow first request
+  // settling late cannot clear the override belonging to a newer one.
+  const moveToken = useRef(0);
+
+  const columnOf = (task) => pendingMoves[task.id]?.columnId ?? task.column_id;
+
+  /**
+   * Tasks come back ordered by their global `position`, so an optimistically
+   * moved card is appended rather than slotted mid-list — matching the position
+   * the server assigns it.
+   */
+  const tasksFor = (columnId) => {
+    const settled = [];
+    const moved = [];
+    for (const task of board.tasks) {
+      if (columnOf(task) !== columnId) continue;
+      (pendingMoves[task.id] ? moved : settled).push(task);
+    }
+    return [...settled, ...moved];
+  };
 
   const save = async (input) => {
     const task = formContext.task;
@@ -49,17 +75,30 @@ export function KanbanBoard({ clientId, board, members, onRefresh }) {
 
   /** Shared by drag-and-drop and the keyboard "Move to" menu. */
   const moveTask = async (task, columnId) => {
-    if (!task || task.column_id === columnId) return;
+    if (!task || columnOf(task) === columnId) return;
     const target = board.columns.find((column) => column.id === columnId);
+    // Read the length before the override lands, or the card counts itself.
+    const position = tasksFor(columnId).length;
+    const token = ++moveToken.current;
+
+    setPendingMoves((current) => ({ ...current, [task.id]: { columnId, token } }));
+
     try {
       await api(`/tasks/${task.id}/move`, {
         method: 'PATCH',
-        body: JSON.stringify({ column_id: columnId, position: tasksFor(columnId).length }),
+        body: JSON.stringify({ column_id: columnId, position }),
       });
       toast.success('Task moved', `“${task.title}” → ${target?.name}`);
       await onRefresh();
     } catch (err) {
       toast.error('Could not move task', err.message);
+    } finally {
+      setPendingMoves((current) => {
+        // A newer move for this task owns the override now — leave it alone.
+        if (current[task.id]?.token !== token) return current;
+        const { [task.id]: _settled, ...rest } = current;
+        return rest;
+      });
     }
   };
 
@@ -138,7 +177,7 @@ export function KanbanBoard({ clientId, board, members, onRefresh }) {
                               { divider: true },
                               { label: 'Move to', heading: true },
                               ...board.columns
-                                .filter((target) => target.id !== task.column_id)
+                                .filter((target) => target.id !== columnOf(task))
                                 .map((target) => ({
                                   label: target.name,
                                   icon: MoveRight,

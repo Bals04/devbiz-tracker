@@ -92,8 +92,10 @@
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 
   --z-sticky: 20;
+  /* The nav scrim must sit below the sidebar it dims, otherwise it swallows
+     every click meant for the open drawer. */
+  --z-scrim: 30;
   --z-sidebar: 40;
-  --z-scrim: 50;
   --z-modal: 60;
   --z-palette: 70;
   --z-toast: 80;

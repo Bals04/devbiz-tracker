@@ -1,4 +1,4 @@
-import { Banknote, CircleDollarSign, ReceiptText, TrendingUp } from 'lucide-react';
+import { Banknote, PhilippinePeso, ReceiptText, TrendingUp } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Badge } from '../components/ui/Data.jsx';
@@ -76,7 +76,7 @@ export function Payments() {
     {
       label: 'Outstanding',
       value: <Amount value={summary?.outstanding_balance} compact />,
-      icon: CircleDollarSign,
+      icon: PhilippinePeso,
       tone: 'warn',
     },
     { label: 'In this view', value: <Amount value={total} compact />, icon: TrendingUp, tone: 'info' },
