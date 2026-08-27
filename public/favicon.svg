@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="DevBiz Tracker">
+  <title>DevBiz Tracker</title>
+  <!--
+    Tab icon: the DevBiz green (#00dc82) on the dark-theme background (#070a0f),
+    so the tile reads the same against light and dark browser chrome.
+
+    The letterforms are stroked paths rather than <text>: favicon rasterisation
+    has no access to the bundled Orbitron/Montserrat webfonts, and a system-font
+    fallback would shift the metrics and blur the glyphs at 16px.
+  -->
+  <defs>
+    <radialGradient id="glow" cx="78%" cy="6%" r="86%">
+      <stop offset="0%" stop-color="#00dc82" stop-opacity="0.22" />
+      <stop offset="62%" stop-color="#00dc82" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <rect width="64" height="64" rx="14" fill="#070a0f" />
+  <rect width="64" height="64" rx="14" fill="url(#glow)" />
+  <!-- Hairline edge so the tile still reads as a tile against dark chrome. -->
+  <rect x="1.25" y="1.25" width="61.5" height="61.5" rx="12.75" fill="none"
+        stroke="#00dc82" stroke-opacity="0.28" stroke-width="2.5" />
+
+  <g fill="none" stroke="#00dc82" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <!-- D: stem plus bowl -->
+    <path d="M16.5 20V44" />
+    <path d="M16.5 20h5.5c4 0 6.5 5 6.5 12s-2.5 12-6.5 12h-5.5" />
+    <!-- B: stem plus two bowls, the lower one slightly wider -->
+    <path d="M35.5 20V44" />
+    <path d="M35.5 20h6c4 0 5.5 2.5 5.5 6s-1.5 6-5.5 6h-6" />
+    <path d="M35.5 32h6.5c4 0 5.5 2.5 5.5 6s-1.5 6-5.5 6h-6.5" />
+  </g>
+</svg>
