@@ -854,6 +854,30 @@
   color: var(--text-subtle);
 }
 
+/* Doubles as the live region for the verify states, so it keeps a fixed height
+   to stop the button hopping as the message changes. */
+.login__status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  min-height: 20px;
+  margin-top: var(--sp-3);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  color: var(--text-subtle);
+  transition: color var(--dur) var(--ease);
+}
+
+.login__card:has(.code-input--verifying) .login__status,
+.login__card:has(.code-input--success) .login__status {
+  color: var(--brand-text);
+}
+
+.login__status-spin {
+  animation: spin 900ms linear infinite;
+}
+
 /* --- Settings ----------------------------------------------------------- */
 .setting-row {
   display: flex;
