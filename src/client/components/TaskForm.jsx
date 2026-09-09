@@ -1,8 +1,9 @@
 import { Check, MessageSquare, Send } from 'lucide-react';
 import { useState } from 'react';
-import { initials, relativeTime } from '../lib/format.js';
+import { relativeTime } from '../lib/format.js';
 import { Alert } from './ui/Feedback.jsx';
 import { Button } from './ui/Button.jsx';
+import { Avatar } from './ui/Data.jsx';
 import { Field, Input, Select, Textarea } from './ui/Form.jsx';
 import { Modal } from './ui/Modal.jsx';
 
@@ -158,9 +159,7 @@ export function TaskForm({
                   aria-pressed={selected}
                   onClick={() => toggleAssignee(member.id)}
                 >
-                  <span className="avatar avatar--sm" style={{ backgroundColor: member.avatar_color }} aria-hidden="true">
-                    {initials(member.name)}
-                  </span>
+                  <Avatar name={member.name} color={member.avatar_color} size="sm" />
                   {member.name}
                   {selected && <Check size={14} aria-hidden="true" />}
                 </button>

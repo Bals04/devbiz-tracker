@@ -8,6 +8,7 @@ import { useDebounced } from '../hooks/useLocalStorage.js';
 import { useResource } from '../hooks/useResource.js';
 import { date, statusLabel } from '../lib/format.js';
 import { Amount } from '../components/ui/Amount.jsx';
+import { SplitSummary } from '../components/PaymentSplits.jsx';
 
 const TYPE_OPTIONS = [
   { value: 'all', label: 'All types' },
@@ -170,6 +171,7 @@ export function Payments() {
                     <Badge tone={TYPE_TONE[payment.payment_type] ?? 'neutral'}>
                       {statusLabel(payment.payment_type)}
                     </Badge>
+                    <SplitSummary splits={payment.splits} code={payment.client?.currency ?? 'PHP'} />
                   </td>
                   <td>{date(payment.payment_date)}</td>
                   <td>{payment.reference_number || <span className="muted">—</span>}</td>

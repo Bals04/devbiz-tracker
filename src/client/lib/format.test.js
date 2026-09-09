@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { currency, dueStatus, initials, statusLabel } from './format.js';
+import { currency, dueStatus, initials, statusLabel, teamPhoto } from './format.js';
 
 /**
  * Builds a yyyy-mm-dd string from local date parts. toISOString() would convert
@@ -16,6 +16,14 @@ const dateOffsetByDays = (offset) => {
 describe('format helpers', () => {
   it('formats Philippine peso values', () => expect(currency(12500)).toContain('12,500'));
   it('creates short avatar initials', () => expect(initials('DevBiz Studio')).toBe('DS'));
+  it('maps bundled team photos by name', () => {
+    expect(teamPhoto('Erman')).toBe('/erman.jpg');
+    expect(teamPhoto('Jasmine')).toBe('/jasmine.jpg');
+    expect(teamPhoto('Jonhyl')).toBe('/jonhyl.png');
+  });
+  it('returns nothing when a member has no bundled photo', () => {
+    expect(teamPhoto('Someone else')).toBeUndefined();
+  });
   it('creates readable status labels', () => expect(statusLabel('on_hold')).toBe('On Hold'));
 });
 

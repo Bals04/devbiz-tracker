@@ -19,6 +19,15 @@ export const dateTime = (value) => value ? new Intl.DateTimeFormat(LOCALE, { mon
 
 export const initials = (name = '') => name.split(' ').map((part) => part[0]).join('').slice(0, 2).toUpperCase();
 
+const TEAM_PHOTOS = {
+  erman: '/erman.jpg',
+  jasmine: '/jasmine.jpg',
+  jonhyl: '/jonhyl.png',
+};
+
+/** Public photo for a team member, if one is bundled. */
+export const teamPhoto = (name = '') => TEAM_PHOTOS[name.trim().toLowerCase()];
+
 export const statusLabel = (value = '') => value.replace(/_/g, ' ').replace(/\b\w/g, (letter) => letter.toUpperCase());
 
 const RELATIVE = new Intl.RelativeTimeFormat(LOCALE, { numeric: 'auto' });

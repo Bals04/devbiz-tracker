@@ -22,12 +22,19 @@ export const clientSchema = z.object({
 
 export const clientUpdateSchema = clientSchema.partial();
 
+export const paymentSplitSchema = z.object({
+  team_member_id: z.string().uuid(),
+  basis: z.enum(['payment', 'remaining']),
+  percent: z.coerce.number().gt(0).lte(100),
+});
+
 export const paymentSchema = z.object({
   amount: z.coerce.number().positive(),
   payment_type: z.enum(['down_payment', 'installment', 'final', 'refund', 'other']).default('installment'),
   payment_date: z.string().date(),
   reference_number: z.string().trim().max(120).nullable().optional(),
   notes: optionalText,
+  splits: z.array(paymentSplitSchema).max(10).optional(),
 });
 
 export const columnSchema = z.object({

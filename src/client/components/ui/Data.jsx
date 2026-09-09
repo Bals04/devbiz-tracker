@@ -1,4 +1,5 @@
-import { initials } from '../../lib/format.js';
+import { useState } from 'react';
+import { initials, teamPhoto } from '../../lib/format.js';
 
 const STATUS_TONE = {
   lead: 'info',
@@ -33,12 +34,18 @@ export function CountPill({ children }) {
 }
 
 export function Avatar({ name, color, size = 'md' }) {
+  const [failed, setFailed] = useState(false);
+  const src = failed ? undefined : teamPhoto(name);
   const classes = ['avatar', size === 'sm' ? 'avatar--sm' : '', size === 'lg' ? 'avatar--lg' : '']
     .filter(Boolean)
     .join(' ');
   return (
     <span className={classes} style={{ backgroundColor: color || 'var(--brand)' }} title={name}>
-      {initials(name)}
+      {src ? (
+        <img src={src} alt="" onError={() => setFailed(true)} />
+      ) : (
+        initials(name)
+      )}
     </span>
   );
 }

@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { currency } from '../lib/format.js';
+import { computeSplits } from '../../shared/paymentSplits.js';
 import { Alert } from './ui/Feedback.jsx';
 import { Button } from './ui/Button.jsx';
-import { Field, Input, Select, Textarea } from './ui/Form.jsx';
+import { Field, Input, Select, Segmented, Textarea } from './ui/Form.jsx';
 import { Modal } from './ui/Modal.jsx';
+import { SplitBuilder } from './PaymentSplits.jsx';
 
 const TYPES = [
   { value: 'down_payment', label: 'Down payment' },
@@ -13,7 +15,21 @@ const TYPES = [
   { value: 'other', label: 'Other' },
 ];
 
-export function PaymentForm({ onClose, onSave, remaining, code = 'PHP' }) {
+const SPLIT_OPTIONS = [
+  { value: 'none', label: 'No split' },
+  { value: 'split', label: 'Split' },
+];
+
+function emptySplitRow(members = []) {
+  return {
+    key: crypto.randomUUID(),
+    team_member_id: members[0]?.id || '',
+    percent: '',
+    basis: 'payment',
+  };
+}
+
+export function PaymentForm({ onClose, onSave, remaining, code = 'PHP', members = [] }) {
   const [form, setForm] = useState({
     amount: '',
     payment_type: 'installment',
@@ -21,6 +37,8 @@ export function PaymentForm({ onClose, onSave, remaining, code = 'PHP' }) {
     reference_number: '',
     notes: '',
   });
+  const [splitting, setSplitting] = useState(false);
+  const [splits, setSplits] = useState([]);
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
 
@@ -31,12 +49,33 @@ export function PaymentForm({ onClose, onSave, remaining, code = 'PHP' }) {
   const overpaying =
     remaining != null && form.payment_type !== 'refund' && amount > Number(remaining) && amount > 0;
 
+  const toggleSplit = (value) => {
+    const enabled = value === 'split';
+    setSplitting(enabled);
+    setSplits((current) => (enabled ? (current.length ? current : [emptySplitRow(members)]) : []));
+  };
+
   const submit = async (event) => {
     event.preventDefault();
     setSaving(true);
     setError('');
     try {
-      await onSave({ ...form, amount });
+      const payload = { ...form, amount };
+      if (splitting) {
+        const rows = splits
+          .filter((row) => row.team_member_id && Number(row.percent) > 0)
+          .map(({ team_member_id, percent }) => ({
+            team_member_id,
+            basis: 'payment',
+            percent: Number(percent),
+          }));
+        if (!rows.length) {
+          throw new Error('Add at least one person to the split.');
+        }
+        computeSplits(amount, rows, { strict: true });
+        payload.splits = rows;
+      }
+      await onSave(payload);
       onClose();
     } catch (err) {
       setError(err.message);
@@ -50,6 +89,7 @@ export function PaymentForm({ onClose, onSave, remaining, code = 'PHP' }) {
       description={
         remaining != null ? `Outstanding balance is ${currency(remaining, code)}.` : undefined
       }
+      wide={splitting}
       onClose={onClose}
       footer={
         <>
@@ -99,6 +139,27 @@ export function PaymentForm({ onClose, onSave, remaining, code = 'PHP' }) {
             </Select>
           )}
         </Field>
+
+        <div className="field">
+          <span className="field__label">
+            Team split
+          </span>
+          <Segmented
+            options={SPLIT_OPTIONS}
+            value={splitting ? 'split' : 'none'}
+            onChange={toggleSplit}
+            label="Team split"
+          />
+          {splitting ? (
+            <SplitBuilder
+              members={members}
+              splits={splits}
+              onChange={setSplits}
+              amount={amount}
+              code={code}
+            />
+          ) : null}
+        </div>
 
         <Field label="Payment date">
           {(props) => (
