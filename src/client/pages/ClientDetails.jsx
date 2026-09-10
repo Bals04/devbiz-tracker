@@ -7,6 +7,7 @@ import { useOutletContext, useParams } from 'react-router-dom';
 import { ClientForm } from '../components/ClientForm.jsx';
 import { KanbanBoard } from '../components/KanbanBoard.jsx';
 import { PaymentForm } from '../components/PaymentForm.jsx';
+import { PaymentHistoryCard, PaymentSplitDialog, SplitSummary } from '../components/PaymentSplits.jsx';
 import { Button } from '../components/ui/Button.jsx';
 import { Progress, StatusBadge } from '../components/ui/Data.jsx';
 import { Alert, EmptyState, Skeleton, StatGridSkeleton } from '../components/ui/Feedback.jsx';
@@ -28,6 +29,7 @@ export function ClientDetails() {
   const { setCrumbLabel } = useOutletContext() ?? {};
   const [tab, setTab] = useState('overview');
   const [paymentOpen, setPaymentOpen] = useState(false);
+  const [viewingPayment, setViewingPayment] = useState(null);
   const [editOpen, setEditOpen] = useState(false);
   const toast = useToast();
 
@@ -236,18 +238,12 @@ export function ClientDetails() {
                 ) : (
                   <ul className="stack" style={{ gap: 'var(--sp-2)' }}>
                     {payments.map((payment) => (
-                      <li className="payment-row" key={payment.id}>
-                        <span className="payment-row__icon" aria-hidden="true">
-                          <ReceiptText size={16} />
-                        </span>
-                        <span style={{ minWidth: 0 }}>
-                          <strong>{statusLabel(payment.payment_type)}</strong>
-                          <span className="payment-row__meta truncate">
-                            {date(payment.payment_date)}
-                            {payment.reference_number ? ` · ${payment.reference_number}` : ''}
-                          </span>
-                        </span>
-                        <strong className="numeric"><Amount value={payment.amount} code={client.currency} /></strong>
+                      <li key={payment.id}>
+                        <PaymentHistoryCard
+                          payment={payment}
+                          code={client.currency}
+                          onOpen={setViewingPayment}
+                        />
                       </li>
                     ))}
                   </ul>
@@ -299,8 +295,21 @@ export function ClientDetails() {
                     </thead>
                     <tbody>
                       {payments.map((payment) => (
-                        <tr key={payment.id}>
-                          <td className="table__primary">{statusLabel(payment.payment_type)}</td>
+                        <tr
+                          key={payment.id}
+                          className="table__row--link"
+                          tabIndex={0}
+                          onClick={() => setViewingPayment(payment)}
+                          onKeyDown={(event) => {
+                            if (event.key !== 'Enter' && event.key !== ' ') return;
+                            event.preventDefault();
+                            setViewingPayment(payment);
+                          }}
+                        >
+                          <td className="table__primary">
+                            {statusLabel(payment.payment_type)}
+                            <SplitSummary splits={payment.splits} code={client.currency} />
+                          </td>
                           <td>{date(payment.payment_date)}</td>
                           <td>{payment.reference_number || <span className="muted">—</span>}</td>
                           <td>{payment.notes || <span className="muted">—</span>}</td>
@@ -344,10 +353,18 @@ export function ClientDetails() {
         </div>
       </div>
 
+      {viewingPayment ? (
+        <PaymentSplitDialog
+          payment={viewingPayment}
+          code={client.currency}
+          onClose={() => setViewingPayment(null)}
+        />
+      ) : null}
       {paymentOpen && (
         <PaymentForm
           remaining={client.remaining_balance}
           code={client.currency}
+          members={members ?? []}
           onClose={() => setPaymentOpen(false)}
           onSave={savePayment}
         />
