@@ -358,6 +358,8 @@
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: minmax(272px, 1fr);
+  /* Size each column to its own cards instead of stretching to the tallest. */
+  align-items: start;
   gap: var(--sp-3);
   padding-bottom: var(--sp-4);
   overflow-x: auto;
